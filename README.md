@@ -19,6 +19,7 @@ From the noDIFFier folder, run:
 
 ```bash
 cd ~/noDIFFier
+sudo chmod +x ./install.sh nodiffier.py
 ./install.sh
 ```
 
