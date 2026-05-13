@@ -1,3 +1,8 @@
+
+<img width="1983" height="793" alt="noDIFFier Image May 13, 2026, 01_44_36 PM" src="https://github.com/user-attachments/assets/f10e1bfa-c905-4703-a2d3-c1070266eaa5" />
+
+# 
+
 <img width="812" height="459" alt="noDIFFier" src="https://github.com/user-attachments/assets/7cdc1f9e-2ac1-4937-aa9a-085731211c90" />
 
 
