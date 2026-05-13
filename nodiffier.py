@@ -45,10 +45,35 @@ def parser() -> argparse.ArgumentParser:
 
 
 def header(style: Style, cwd: str) -> None:
-    print(style.paint("╭────────────────────────────╮", "36"))
-    print(style.paint("│ ✨ noDIFFier patch helper  │", "1;35"))
-    print(style.paint("╰────────────────────────────╯", "36"))
-    print(f"Working directory: {style.paint(cwd, '36')}")
+
+    banner = r"""
+  ███╗   ██╗ ██████╗ ██████╗ ██╗███████╗███████╗██╗███████╗██████╗
+  ████╗  ██║██╔═══██╗██╔══██╗██║██╔════╝██╔════╝██║██╔════╝██╔══██╗
+  ██╔██╗ ██║██║   ██║██║  ██║██║█████╗  █████╗  ██║█████╗  ██████╔╝
+  ██║╚██╗██║██║   ██║██║  ██║██║██╔══╝  ██╔══╝  ██║██╔══╝  ██╔══██╗
+  ██║ ╚████║╚██████╔╝██████╔╝██║██║     ██║     ██║███████╗██║  ██║
+  ╚═╝  ╚═══╝ ╚═════╝ ╚═════╝ ╚═╝╚═╝     ╚═╝     ╚═╝╚══════╝╚═╝  ╚═╝
+"""
+
+    print(style.paint(banner, "1;35"))
+
+    print(style.paint(
+        "                       paste → patch → done",
+        "36"
+    ))
+
+    print(style.paint(
+        f"                          Version {VERSION}",
+        "90"
+    ))
+
+    print()
+
+    print(
+        f"     {style.paint('Working Directory:', '1;36')} "
+        f"{cwd}"
+    )
+
     print()
 
 
@@ -58,7 +83,7 @@ def read_patch(path: str | None) -> bytes:
             return patch_file.read()
 
     if sys.stdin.isatty():
-        print("Paste a unified diff below, then press CTRL+D when finished.")
+        print("     Paste a unified diff below, then press CTRL+D when finished.")
         print()
     return sys.stdin.buffer.read()
 
