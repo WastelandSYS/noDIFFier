@@ -1,3 +1,6 @@
+<img width="812" height="459" alt="noDIFFier" src="https://github.com/user-attachments/assets/7cdc1f9e-2ac1-4937-aa9a-085731211c90" />
+
+
 # noDIFFier
 A tool used for fixing / updating Codex's DIFF outputs
 
