@@ -193,6 +193,8 @@ def main(argv: list[str] | None = None) -> int:
     style = Style()
     cwd = os.getcwd()
 
+    os.system("cls" if os.name == "nt" else "clear")
+
     header(style, cwd)
 
     try:
