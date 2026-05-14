@@ -7,8 +7,8 @@ REPO_DIR=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)
 
 SOURCE_FILE="$REPO_DIR/nodiffier.py"
 
-INSTALL_DIR="${NODIFFIER_INSTALL_DIR:-$HOME/.local/share/nodiffier}"
-BIN_DIR="${NODIFFIER_BIN_DIR:-$HOME/.local/bin}"
+INSTALL_DIR="${NODIFFIER_INSTALL_DIR:-/usr/local/share/nodiffier}"
+BIN_DIR="${NODIFFIER_BIN_DIR:-/usr/local/bin}"
 
 INSTALLED_FILE="$INSTALL_DIR/nodiffier.py"
 
@@ -47,51 +47,22 @@ fi
 #     CREATE DIRECTORIES
 # =========================
 
-mkdir -p "$INSTALL_DIR"
-mkdir -p "$BIN_DIR"
+sudo mkdir -p "$INSTALL_DIR"
+sudo mkdir -p "$BIN_DIR"
 
 # =========================
 #      INSTALL SCRIPT
 # =========================
 
-cp "$SOURCE_FILE" "$INSTALLED_FILE"
-chmod +x "$INSTALLED_FILE"
+sudo cp "$SOURCE_FILE" "$INSTALLED_FILE"
+sudo chmod +x "$INSTALLED_FILE"
 
 # =========================
-#      CREATE WRAPPERS
+#      CREATE SHORTCUTS
 # =========================
 
-cat > "$BIN_DIR/noDIFFier" <<EOF
-#!/bin/bash
-exec python3 "$INSTALLED_FILE" "\$@"
-EOF
-
-cat > "$BIN_DIR/nodiffier" <<EOF
-#!/bin/bash
-exec python3 "$INSTALLED_FILE" "\$@"
-EOF
-
-chmod +x "$BIN_DIR/noDIFFier"
-chmod +x "$BIN_DIR/nodiffier"
-
-# =========================
-#        PATH FIX
-# =========================
-
-PATH_LINE='export PATH="$HOME/.local/bin:$PATH"'
-
-if ! grep -Fq "$PATH_LINE" "$HOME/.bashrc"; then
-
-    printf '🔧 Adding ~/.local/bin to PATH...\n'
-
-    echo '' >> "$HOME/.bashrc"
-    echo '# noDIFFier PATH setup' >> "$HOME/.bashrc"
-    echo "$PATH_LINE" >> "$HOME/.bashrc"
-
-fi
-
-# Export immediately for current session
-export PATH="$HOME/.local/bin:$PATH"
+sudo ln -sf "$INSTALLED_FILE" "$BIN_DIR/noDIFFier"
+sudo ln -sf "$INSTALLED_FILE" "$BIN_DIR/nodiffier"
 
 # =========================
 #       INSTALL DONE
@@ -99,7 +70,7 @@ export PATH="$HOME/.local/bin:$PATH"
 
 printf '\n✅ noDIFFier installed successfully!\n\n'
 
-printf 'Installed files:\n'
+printf 'Installed file:\n'
 printf '   %s\n' "$INSTALLED_FILE"
 
 printf '\nCommands available:\n'
@@ -108,21 +79,21 @@ printf '   nodiffier\n\n'
 
 printf 'Testing installation...\n\n'
 
-if command -v noDIFFier >/dev/null 2>&1; then
+if command -v nodiffier >/dev/null 2>&1; then
 
-    noDIFFier --version
+    nodiffier --version
 
     printf '\n🚀 Ready to use!\n\n'
     printf 'Example usage:\n'
-    printf '   noDIFFier\n'
+    printf '   nodiffier\n'
+    printf '   nodiffier update.diff\n'
     printf '   noDIFFier update.diff\n\n'
 
 else
 
-    printf '⚠ PATH update may require a new terminal session.\n\n'
-    printf 'Run:\n'
-    printf '   source ~/.bashrc\n\n'
-    printf 'Then test:\n'
-    printf '   noDIFFier --version\n\n'
+    printf '⚠ Install completed, but command was not found in PATH.\n\n'
+    printf 'Check shortcut with:\n'
+    printf '   ls -l /usr/local/bin/nodiffier\n\n'
+    exit 1
 
 fi
