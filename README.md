@@ -24,7 +24,8 @@ It stays simple on purpose:
 From the noDIFFier folder, run:
 
 ```bash
-cd ~/noDIFFier
+git clone https://github.com/WastelandSYS/noDIFFier.git
+cd noDIFFier
 chmod +x ./install.sh nodiffier.py
 ./install.sh
 ```
