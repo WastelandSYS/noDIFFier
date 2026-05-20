@@ -5,18 +5,52 @@ from __future__ import annotations
 import argparse
 import json
 import os
+import re
 import shlex
 import shutil
 import subprocess
 import sys
+import time
 from datetime import datetime, timezone
 from pathlib import Path, PurePosixPath
 from typing import Iterable
 
 APP_NAME = "noDIFFier"
-VERSION = "0.4.0"
+VERSION = "0.4.1"
 BACKUP_ROOT = ".nodiffier-backups"
 
+
+
+ANSI_RE = re.compile(r"\x1b\[[0-9;]*m")
+
+
+def visible_len(text: str) -> int:
+    return len(ANSI_RE.sub("", text))
+
+
+def truncate_visible(text: str, max_visible: int) -> str:
+    if max_visible <= 0:
+        return ""
+    out: list[str] = []
+    visible = 0
+    i = 0
+    while i < len(text) and visible < max_visible:
+        if text[i] == "\x1b":
+            end = text.find("m", i)
+            if end != -1:
+                out.append(text[i:end + 1])
+                i = end + 1
+                continue
+        out.append(text[i])
+        visible += 1
+        i += 1
+    return "".join(out)
+
+
+def pad_visible(text: str, width: int) -> str:
+    clipped = truncate_visible(text, width)
+    padding = max(0, width - visible_len(clipped))
+    return clipped + (" " * padding)
 
 class PatchSafetyError(ValueError):
     """Raised when a patch references a path outside the working directory."""
@@ -30,6 +64,42 @@ class Style:
         if not self.enabled:
             return text
         return f"\033[{code}m{text}\033[0m"
+
+
+def terminal_width(default: int = 100) -> int:
+    return max(60, shutil.get_terminal_size((default, 30)).columns)
+
+
+def boxed(style: Style, lines: list[str], color: str | None = "36") -> str:
+    width = min(terminal_width(), 140)
+    inner = width - 4
+    top_raw = f"╔{'═' * (width - 2)}╗"
+    bottom_raw = f"╚{'═' * (width - 2)}╝"
+    side_left = "║ "
+    side_right = " ║"
+
+    if color:
+        top = style.paint(top_raw, color)
+        bottom = style.paint(bottom_raw, color)
+        left = style.paint(side_left, color)
+        right = style.paint(side_right, color)
+    else:
+        top = top_raw
+        bottom = bottom_raw
+        left = side_left
+        right = side_right
+
+    body = [f"{left}{pad_visible(line, inner)}{right}" for line in lines]
+    return "\n".join([top, *body, bottom])
+
+
+def smooth_print(text: str, enabled: bool = True, delay: float = 0.01) -> None:
+    if enabled and sys.stdout.isatty():
+        for line in text.splitlines():
+            print(line)
+            time.sleep(delay)
+    else:
+        print(text)
 
 
 def parser() -> argparse.ArgumentParser:
@@ -81,40 +151,34 @@ def parser() -> argparse.ArgumentParser:
         action="store_true",
         help="Do not clear the terminal before showing the noDIFFier banner.",
     )
+    cli.add_argument(
+        "--list-backups",
+        action="store_true",
+        help="List saved noDIFFier backup snapshots for the current directory.",
+    )
+    cli.add_argument(
+        "--restore-backup",
+        metavar="SNAPSHOT",
+        help="Restore files from a backup snapshot (timestamp from --list-backups).",
+    )
     cli.add_argument("--version", action="version", version=f"{APP_NAME} {VERSION}")
     return cli
 
 
 def header(style: Style, cwd: str) -> None:
-
-    banner = r"""
-  ███╗   ██╗ ██████╗ ██████╗ ██╗███████╗███████╗██╗███████╗██████╗
-  ████╗  ██║██╔═══██╗██╔══██╗██║██╔════╝██╔════╝██║██╔════╝██╔══██╗
-  ██╔██╗ ██║██║   ██║██║  ██║██║█████╗  █████╗  ██║█████╗  ██████╔╝
-  ██║╚██╗██║██║   ██║██║  ██║██║██╔══╝  ██╔══╝  ██║██╔══╝  ██╔══██╗
-  ██║ ╚████║╚██████╔╝██████╔╝██║██║     ██║     ██║███████╗██║  ██║
-  ╚═╝  ╚═══╝ ╚═════╝ ╚═════╝ ╚═╝╚═╝     ╚═╝     ╚═╝╚══════╝╚═╝  ╚═╝
-"""
-
-    print(style.paint(banner, "1;35"))
-
-    print(style.paint(
-        "                       paste → patch → done",
-        "36"
-    ))
-
-    print(style.paint(
-        f"                          Version {VERSION}",
-        "90"
-    ))
-
-    print()
-
-    print(
-        f"     {style.paint('Working Directory:', '1;36')} "
-        f"{cwd}"
-    )
-
+    banner = [
+        "███╗   ██╗ ██████╗ ██████╗ ██╗███████╗███████╗██╗███████╗██████╗",
+        "████╗  ██║██╔═══██╗██╔══██╗██║██╔════╝██╔════╝██║██╔════╝██╔══██╗",
+        "██╔██╗ ██║██║   ██║██║  ██║██║█████╗  █████╗  ██║█████╗  ██████╔╝",
+        "██║╚██╗██║██║   ██║██║  ██║██║██╔══╝  ██╔══╝  ██║██╔══╝  ██╔══██╗",
+        "██║ ╚████║╚██████╔╝██████╔╝██║██║     ██║     ██║███████╗██║  ██║",
+        "╚═╝  ╚═══╝ ╚═════╝ ╚═════╝ ╚═╝╚═╝     ╚═╝     ╚═╝╚══════╝╚═╝  ╚═╝",
+        "",
+        "paste → patch → done",
+        f"Version {VERSION}",
+        f"Working Directory: {style.paint(cwd, "36")}",
+    ]
+    smooth_print(boxed(style, banner, "1;35"), enabled=True, delay=0.004)
     print()
 
 
@@ -280,6 +344,51 @@ def backup_existing_files(patch_data: bytes, cwd: str) -> Path | None:
     return backup_dir
 
 
+def backup_root(cwd: str) -> Path:
+    return Path(cwd) / BACKUP_ROOT
+
+
+def list_backups(cwd: str) -> list[Path]:
+    root = backup_root(cwd)
+    if not root.exists():
+        return []
+    return sorted((entry for entry in root.iterdir() if entry.is_dir()), key=lambda p: p.name, reverse=True)
+
+
+def restore_backup(cwd: str, snapshot: str) -> tuple[bool, str]:
+    root = backup_root(cwd)
+    backup_dir = root / snapshot
+    files_dir = backup_dir / "files"
+    manifest_path = backup_dir / "manifest.json"
+
+    if not files_dir.is_dir() or not manifest_path.is_file():
+        return False, f"Backup snapshot not found or invalid: {snapshot}"
+
+    try:
+        manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+    except (json.JSONDecodeError, OSError) as exc:
+        return False, f"Could not read backup manifest: {exc}"
+
+    files = manifest.get("files", [])
+    if not isinstance(files, list):
+        return False, "Backup manifest is invalid: 'files' must be a list."
+
+    restored = 0
+    cwd_path = Path(cwd)
+    for relative in files:
+        if not isinstance(relative, str):
+            continue
+        source = files_dir / relative
+        destination = cwd_path / relative
+        if not source.is_file():
+            continue
+        destination.parent.mkdir(parents=True, exist_ok=True)
+        shutil.copy2(source, destination)
+        restored += 1
+
+    return True, f"Restored {restored} file(s) from backup snapshot: {snapshot}"
+
+
 def git_status(cwd: str) -> subprocess.CompletedProcess[bytes]:
     return subprocess.run(
         ["git", "status", "--porcelain"],
@@ -403,6 +512,33 @@ def main(argv: list[str] | None = None) -> int:
 
     header(style, cwd)
 
+    if args.list_backups:
+        backups = list_backups(cwd)
+        if not backups:
+            print("No backups found for this directory.")
+            return 0
+        rows = ["Available backup snapshots (newest first):", ""]
+        for backup in backups:
+            manifest = backup / "manifest.json"
+            created = backup.name
+            if manifest.is_file():
+                try:
+                    created = json.loads(manifest.read_text(encoding="utf-8")).get("created_at", backup.name)
+                except Exception:
+                    created = backup.name
+            rows.append(f"{backup.name:<24}  UTC: {created}")
+        print(boxed(style, rows, "36"))
+        return 0
+
+    if args.restore_backup:
+        ok, message = restore_backup(cwd, args.restore_backup)
+        if ok:
+            print(style.paint("Success", "32"))
+            print(message)
+            return 0
+        print_failure(style, message)
+        return 1
+
     if not args.allow_dirty:
         warning = dirty_worktree_warning(cwd)
         if warning:
@@ -430,4 +566,13 @@ def main(argv: list[str] | None = None) -> int:
 
 
 if __name__ == "__main__":
-    raise SystemExit(main())
+    try:
+        raise SystemExit(main())
+    except KeyboardInterrupt:
+        st = Style()
+        print()
+        print(boxed(st, ["Interrupted with CTRL+C", "Closing noDIFFier gracefully."], "33"))
+        time.sleep(1)
+        if st.enabled:
+            os.system("cls" if os.name == "nt" else "clear")
+        raise SystemExit(130)
