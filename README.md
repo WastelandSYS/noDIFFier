@@ -105,20 +105,6 @@ Version check:
 nodiffier --version
 ```
 
----
-
-# AVAILABLE THEMES
-
-- terminal default
-- paste mode
-- file mode
-- success/fail output
-- safe-apply check flow
-- dual-command launcher mode
-- minimal footprint mode
-
----
-
 # COMPATIBILITY
 
 Designed primarily for Linux systems.
@@ -128,7 +114,6 @@ Tested/targeted on:
 - Raspberry Pi OS
 - Kali Linux
 - Debian
-- Ubuntu
 
 Notes:
 
