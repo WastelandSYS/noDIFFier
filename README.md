@@ -139,7 +139,7 @@ The tool focuses on:
 
 # LICENSE
 
-MIT License
+MIT License (Coming soon)
 
 ---
 
