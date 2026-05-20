@@ -127,7 +127,13 @@ noDIFFier
 
 ## Uninstall
 
-Remove the installed script and shortcuts:
+Run the uninstaller:
+
+```bash
+/usr/local/share/nodiffier/uninstall.sh
+```
+
+Or remove manually:
 
 ```bash
 sudo rm -f /usr/local/bin/nodiffier
