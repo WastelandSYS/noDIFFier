@@ -114,6 +114,7 @@ Tested/targeted on:
 - Raspberry Pi OS
 - Kali Linux
 - Debian
+- Ubuntu
 
 Notes:
 
