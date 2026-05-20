@@ -2,7 +2,7 @@
 
 #
 
-<img width="812" height="459" alt="noDIFFier" src="https://github.com/user-attachments/assets/7cdc1f9e-2ac1-4937-aa9a-085731211c90" />
+<img width="827" height="527" alt="nodiffier-0-4-1-1" src="https://github.com/user-attachments/assets/efc6bbe2-a2cb-4c50-98c0-a346cb8a8a62" />
 
 # noDIFFier
 
