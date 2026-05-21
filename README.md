@@ -37,7 +37,7 @@ A lightweight Linux terminal tool that safely applies Codex-generated unified di
 ```bash
 git clone https://github.com/WastelandSYS/noDIFFier.git
 cd noDIFFier
-chmod +x install.sh uninstall.sh nodiffier.py
+chmod +x install.sh nodiffier.py
 ./install.sh
 ```
 
