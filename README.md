@@ -38,7 +38,7 @@ A lightweight Linux terminal tool that safely applies Codex-generated unified di
 git clone https://github.com/WastelandSYS/noDIFFier.git
 cd noDIFFier
 chmod +x install.sh nodiffier.py
-./install.sh
+sudo ./install.sh
 ```
 
 Launch with:
@@ -54,7 +54,7 @@ nodiffier
 ```bash
 cd noDIFFier
 chmod +x uninstall.sh
-./uninstall.sh
+sudo ./uninstall.sh
 ```
 
 Optional manual cleanup:
