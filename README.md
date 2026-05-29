@@ -25,8 +25,11 @@ An AI-assisted patch workflow tool for Linux terminals. noDIFFier validates and 
 - Validates patches using `git apply --check`
 - Blocks unsafe paths, absolute paths, and directory traversal attempts
 - Creates automatic backups before modifying files
+- Warns before applying patches over uncommitted Git changes
+- Shows a concise patch preview before changes are applied
+- Supports dry runs, rollback from backups, and patch history logging
 - Clear success and failure reporting
-- Applies patches only within the current working directory
+- Detects the nearest Git repository root while still allowing current-directory mode
 
 ### Linux Terminal Tooling
 
@@ -121,7 +124,30 @@ File mode examples:
 cd /path/to/your/project
 nodiffier changes.patch
 nodiffier changes.diff
+nodiffier *.patch
 ```
+
+Dry run mode validates a patch and lists affected files without changing anything:
+
+```bash
+nodiffier --dry-run changes.patch
+```
+
+Rollback helpers use the existing `.nodiffier-backups/` snapshots and never delete backup history automatically:
+
+```bash
+nodiffier --rollback-last
+nodiffier --rollback
+```
+
+Workflow safety prompts can be bypassed for trusted automation:
+
+```bash
+nodiffier --yes changes.patch
+nodiffier --force changes.patch
+```
+
+Successful patch applications are logged under `.nodiffier-history/` with the timestamp, patch content, affected files, and result status for a lightweight audit trail.
 
 Alias command:
 
@@ -151,7 +177,7 @@ Notes:
 - Requires `git` for patch validation and application.
 - Uses system Python 3 without installing global Python packages.
 - Avoids `externally-managed-environment` issues by not using `sudo pip`.
-- Applies patches only to the current working directory where you run it.
+- Defaults to the nearest Git repository root when launched from a subdirectory, unless you decline the prompt.
 
 ---
 
