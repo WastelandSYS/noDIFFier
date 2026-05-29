@@ -6,21 +6,36 @@
 
 # noDIFFier
 
-A lightweight Linux terminal tool that safely applies Codex-generated unified diffs to the current working directory using `git apply`.
+An AI-assisted patch workflow tool for Linux terminals. noDIFFier validates and applies Codex-generated unified diffs directly to your project, then immediately waits for the next patch so development never has to stop.
 
 ---
 
 # FEATURES
 
+### AI Patch Workflow
+
+- Paste Codex-generated unified diffs directly into the terminal
+- Apply multiple patches continuously within a single session
+- No manual patch files required
+- No manual file editing required
+- Designed specifically for AI-assisted development workflows
+
+### Safe Patch Application
+
+- Validates patches using `git apply --check`
+- Blocks unsafe paths, absolute paths, and directory traversal attempts
+- Creates automatic backups before modifying files
+- Clear success and failure reporting
+- Applies patches only within the current working directory
+
+### Linux Terminal Tooling
+
 - Applies unified diffs from pasted terminal input or patch files
-- Uses `git apply --check -` validation before patching
-- Blocks unsafe patch paths such as absolute paths and `..` traversal
-- Works directly in your current directory (no hardcoded target folder)
+- Works directly in your current directory with no hardcoded target folder
 - Provides both `noDIFFier` and `nodiffier` global launcher commands
 - Installer avoids `sudo pip` and Python package mutation
 - Designed for Linux environments including Raspberry Pi OS, Kali, Debian, and Ubuntu
 - Minimal footprint: one Python tool script plus install/uninstall scripts
-- Simple success/failure flow for quick Codex patch application
 
 ---
 
@@ -85,6 +100,21 @@ nodiffier
 # paste full diff, then press CTRL+D
 ```
 
+Primary AI-assisted workflow:
+
+```text
+cd /path/to/your/project
+nodiffier
+paste Codex-generated patch
+CTRL+D
+patch is validated and applied
+paste next patch
+CTRL+D
+patch is validated and applied
+```
+
+Continue pasting patches until the development task is complete. noDIFFier keeps the session open after each patch, so you can apply a sequence of AI-generated changes without restarting the application.
+
 File mode examples:
 
 ```bash
@@ -127,20 +157,50 @@ Notes:
 
 # WHY NODIFFIER?
 
-noDIFFier was built to make Codex patch application safer, faster, and cleaner in terminal workflows.
+AI coding assistants can generate useful unified diffs, but applying each patch manually adds repetitive work to the development loop.
+
+Traditional workflow:
+
+```text
+Copy patch
+Create patch file
+Run patch command
+Verify changes
+Repeat
+```
+
+noDIFFier workflow:
+
+```text
+Paste patch
+CTRL+D
+Patch applied
+
+Paste next patch
+CTRL+D
+Patch applied
+
+Paste next patch
+CTRL+D
+Patch applied
+```
+
+The goal is to remove friction from AI-assisted development so developers can focus on building instead of managing patch files and repeating terminal commands. noDIFFier turns patch application into a continuous workflow: launch it once inside the project directory, paste each Codex-generated diff, press `CTRL+D`, review the result, and continue with the next patch.
 
 The tool focuses on:
+
+- rapid AI-generated patch application
 - safe patch preflight checks
 - minimal setup complexity
 - Linux-friendly installation
 - predictable current-directory behavior
-- practical Codex diff workflows
+- practical Codex and AI coding assistant workflows
 
 ---
 
 # LICENSE
 
-MIT License (Coming soon)
+GNU GPL v3 License
 
 ---
 
