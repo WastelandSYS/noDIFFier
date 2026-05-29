@@ -1,5 +1,14 @@
 #!/usr/bin/env python3
 
+# =========================================================
+# noDIFFier
+# AI patch workflow tool for Linux terminals.
+#
+# Copyright (c) 2026 WastelandSYS
+# Licensed under the GNU General Public License v3.0
+# SPDX-License-Identifier: GPL-3.0-only
+# =========================================================
+
 from __future__ import annotations
 
 import argparse
