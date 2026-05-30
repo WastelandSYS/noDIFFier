@@ -57,7 +57,7 @@ An AI-assisted patch workflow tool for Linux terminals. noDIFFier validates and 
 # SCREENSHOTS
 
 
-<img width="827" height="527" alt="nodiffier-0-4-1-1" src="https://github.com/user-attachments/assets/efc6bbe2-a2cb-4c50-98c0-a346cb8a8a62" />
+<img width="950" height="500" alt="nodiffierMENU" src="https://github.com/user-attachments/assets/24df4210-f7c1-4389-950a-a7e808f90bcd" />
 
 ---
 
