@@ -12,6 +12,18 @@ An AI-assisted patch workflow tool for Linux terminals. noDIFFier validates and 
 
 # FEATURES
 
+### v0.5.0 Workflow Improvements
+
+- Boxed session summary with patches applied, files modified, backups created, failures, validation failures, and session duration
+- Lightweight patch history logging under `.nodiffier-history/` after every successful patch
+- Rollback helpers for listing backups, restoring a chosen snapshot, restoring the newest backup, and interactive rollback
+- Dry run mode that validates patch safety, checks `git apply --check`, lists affected files, and makes no changes
+- Patch preview prompts that show only affected file paths before applying changes
+- Dirty Git worktree warning with `--force` / `--allow-dirty` overrides
+- Git root detection when launched from a repository subdirectory, while preserving patch-file paths relative to the launch directory
+- Batch patch mode for applying multiple `.patch` / `.diff` files sequentially with per-patch results
+
+
 ### AI Patch Workflow
 
 - Paste Codex-generated unified diffs directly into the terminal
@@ -136,8 +148,10 @@ nodiffier --dry-run changes.patch
 Rollback helpers use the existing `.nodiffier-backups/` snapshots and never delete backup history automatically:
 
 ```bash
+nodiffier --list-backups
 nodiffier --rollback-last
 nodiffier --rollback
+nodiffier --restore-backup 20260529T120000Z
 ```
 
 Workflow safety prompts can be bypassed for trusted automation:
@@ -145,6 +159,7 @@ Workflow safety prompts can be bypassed for trusted automation:
 ```bash
 nodiffier --yes changes.patch
 nodiffier --force changes.patch
+nodiffier --allow-dirty changes.patch
 ```
 
 Successful patch applications are logged under `.nodiffier-history/` with the timestamp, patch content, affected files, and result status for a lightweight audit trail.
