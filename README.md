@@ -241,7 +241,7 @@ The tool focuses on:
 
 # LICENSE
 
-GNU GPL v3 License
+noDIFFier is released under the GNU General Public License v3.0. See [`LICENSE`](LICENSE) for the full license text.
 
 ---
 
