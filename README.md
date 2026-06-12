@@ -56,8 +56,16 @@ An AI-assisted patch workflow tool for Linux terminals. noDIFFier validates and 
 
 # SCREENSHOTS
 
+<p align="center">
+<img width="950" height="500" alt="nodiffierMENU" src="https://github.com/user-attachments/assets/24df4210-f7c1-4389-950a-a7e808f90bcd"
+/>
+</p>
 
-<img width="950" height="500" alt="nodiffierMENU" src="https://github.com/user-attachments/assets/24df4210-f7c1-4389-950a-a7e808f90bcd" />
+
+<p align="center">
+<img width="640" height="166" alt="nodiffierseshexit" src="https://github.com/user-attachments/assets/0b231fe8-07e3-4fc3-9a3f-4993c4bc36e0"
+/>
+</p>
 
 ---
 
